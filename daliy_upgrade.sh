@@ -16,6 +16,7 @@ udlog="system_update_$cutimer.log"
 basedst="$HOME/update_log"
 logdst="${basedst}/${cuyear}/${cumonth}"
 kcmd="aptitude"
+cuid=$(id -u)
 #If you're running the script as a normal user, you'll need to assign your Password to the Password variable
 Password="hjkl;'"      #You password
 
@@ -46,7 +47,8 @@ check_network(){
     then
         Blue "-------------------------\nNetwork connection is fine, system is updating!\n$(date "+%F %T")"
     else
-        Red "-------------------------\nThe device is offline, please check whether the network connection is normal!\nSystem update task failed!\n$(date "+%F %T")"
+        Red "-------------------------\nThe device is offline, please check whether the network connection is \
+        normal!\nSystem update task failed!\n$(date "+%F %T")"
         exit 1
     fi
 }
@@ -56,7 +58,7 @@ Action (){
 }
 
 check_user(){
-    if [ $(id -u) != 0 ]
+    if [ "$cuid" != 0 ]
     then
         common_user
     else
@@ -67,7 +69,7 @@ check_user(){
 check_aptitude(){
     if ! aptitude -h > /dev/null 2>&1;
     then
-        if [ $(id -u) = 0 ]
+        if [ "$cuid" = 0 ]
         then
             apt-get install -y aptitude
         else
